@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tangods_roborock_ha"
+description = "Roborock HA plugin TangoDS"
+keywords = ["tango device", "tango", "pytango", "roborock", "home-assistant"]
+readme = "README.md"
+authors = [
+    {name = "Leonid Lunin", email = "lunin.leonid@gmail.com"},
+]
+requires-python = ">=3.10"
+dependencies = ['grequests', 'pytango']
+license = {text = "MIT"}
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/lrlunin/pytango-roborock-ha"
+
+[project.scripts]
+RoborockHA = "tangods_roborock_ha:main"
+
+[tool.setuptools.dynamic]
+version = {file = "VERSION"}
+
+[tool.setuptools.packages.find]
+
+[tool.setuptools.package-data]
+tangods_roborock_ha = ["VERSION"]

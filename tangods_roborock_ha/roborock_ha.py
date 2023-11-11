@@ -32,148 +32,80 @@ class RoborockHA(Device):
         "sensor.roborock_s7_pro_ultra_total_duration",
         "sensor.roborock_s7_pro_ultra_total_dust_collection_count",
     )
-
-    """
-    {
-    "entity_id": "vacuum.roborock_s7_pro_ultra",
-    "state": "docked",
-    "attributes": {
-        "fan_speed_list": [
-            "off",
-            "quiet",
-            "balanced",
-            "turbo",
-            "max",
-            "custom",
-            "max_plus"
+    _ha_entities_type_access = {
+        "sensor.roborock_s7_pro_ultra_last_clean_start": [str, AttrWriteType.READ],
+        #"number.roborock_s7_pro_ultra_sound_volume": [int, AttrWriteType.READ_WRITE],
+        "sensor.roborock_s7_pro_ultra_cleaning_progress": [float, AttrWriteType.READ],
+        "sensor.roborock_s7_pro_ultra_current_clean_area": [float, AttrWriteType.READ],
+        "sensor.roborock_s7_pro_ultra_current_clean_duration": [
+            int,
+            AttrWriteType.READ,
         ],
-        "mop_mode_list": [
-            "standard",
-            "deep",
-            "custom",
-            "deep_plus"
+        "sensor.roborock_s7_pro_ultra_current_error": [int, AttrWriteType.READ],
+        # "sensor.roborock_s7_pro_ultra_current_room": [str, AttrWriteType.READ],
+        "sensor.roborock_s7_pro_ultra_dock_status": [str, AttrWriteType.READ],
+        "sensor.roborock_s7_pro_ultra_last_clean_start": [str, AttrWriteType.READ],
+        "sensor.roborock_s7_pro_ultra_last_clean_end": [str, AttrWriteType.READ],
+        "sensor.roborock_s7_pro_ultra_total_clean_area": [float, AttrWriteType.READ],
+        "sensor.roborock_s7_pro_ultra_total_clean_count": [int, AttrWriteType.READ],
+        "sensor.roborock_s7_pro_ultra_total_duration": [int, AttrWriteType.READ],
+        "sensor.roborock_s7_pro_ultra_total_dust_collection_count": [
+            int,
+            AttrWriteType.READ,
         ],
-        "mop_intensity_list": [
-            "off",
-            "mild",
-            "moderate",
-            "intense",
-            "custom"
-        ],
-        "battery_level": 100,
-        "battery_icon": "mdi:battery-charging-100",
-        "fan_speed": "max",
-        "msgVer": 2,
-        "msgSeq": 168,
-        "state": "docked",
-        "battery": 100,
-        "cleanTime": 13,
-        "cleanArea": 0,
-        "squareMeterCleanArea": 0.0,
-        "errorCode": 0,
-        "mapPresent": 1,
-        "inCleaning": 0,
-        "inReturning": 0,
-        "inFreshState": 1,
-        "labStatus": 1,
-        "waterBoxStatus": 1,
-        "backType": -1,
-        "washPhase": 0,
-        "washReady": 0,
-        "fanPower": 104,
-        "dndEnabled": 0,
-        "mapStatus": 3,
-        "isLocating": 0,
-        "lockStatus": 0,
-        "waterBoxMode": 201,
-        "waterBoxCarriageStatus": 1,
-        "mopForbiddenEnable": 1,
-        "adbumperStatus": [
-            0,
-            0,
-            0
-        ],
-        "waterShortageStatus": 0,
-        "dockType": 3,
-        "dustCollectionStatus": 0,
-        "autoDustCollection": 1,
-        "mopMode": 302,
-        "debugMode": 0,
-        "switchMapMode": 0,
-        "dockErrorStatus": 0,
-        "chargeStatus": 1,
-        "unsaveMapReason": 4,
-        "unsaveMapFlag": 0,
-        "status": "charging",
-        "mop_mode": "custom",
-        "mop_intensity": "mild",
-        "error": null,
-        "icon": "mdi:robot-vacuum",
-        "friendly_name": "Roborock S7 Pro Ultra",
-        "supported_features": 16383
-    },
-    "last_changed": "2023-11-10T13:42:47.096104+00:00",
-    "last_updated": "2023-11-10T16:24:16.156867+00:00",
-    "context": {
-        "id": "01HEX0RS0WJMD9X0V1FHM2KJPC",
-        "parent_id": null,
-        "user_id": null
     }
-}
-    """
-
-    _vacuum_query_attributes = (
-        "fan_speed_list",
-        "mop_mode_list",
-        "mop_intensity_list",
-        "battery_level",
-        "battery_icon",
-        "fan_speed",
-        "msgVer",
-        "msgSeq",
-        "state",
-        "battery",
-        "cleanTime",
-        "cleanArea",
-        "squareMeterCleanArea",
-        "errorCode",
-        "mapPresent",
-        "inCleaning",
-        "inReturning",
-        "inFreshState",
-        "labStatus",
-        "waterBoxStatus",
-        "backType",
-        "washPhase",
-        "washReady",
-        "fanPower",
-        "dndEnabled",
-        "mapStatus",
-        "isLocating",
-        "lockStatus",
-        "waterBoxMode",
-        "waterBoxCarriageStatus",
-        "mopForbiddenEnable",
-        "adbumperStatus",
-        "waterShortageStatus",
-        "dockType",
-        "dustCollectionStatus",
-        "autoDustCollection",
-        "mopMode",
-        "debugMode",
-        "switchMapMode",
-        "dockErrorStatus",
-        "chargeStatus",
-        "unsaveMapReason",
-        "unsaveMapFlag",
-        "status",
-        "mop_mode",
-        "mop_intensity",
-        "error",
-        "icon",
-        "friendly_name",
-        "supported_features",
-    )
+    _vacuum_query_attrs_types = {
+        #'fan_speed_list': list,
+        #'mop_mode_list': list,
+        #'mop_intensity_list': list,
+        "battery_level": int,
+        #'battery_icon': str,
+        "fan_speed": str,
+        #'msgVer': int,
+        #'msgSeq': int,
+        "state": str,
+        #'battery': int,
+        "cleanTime": int,
+        "cleanArea": int,
+        "squareMeterCleanArea": float,
+        "errorCode": int,
+        #'mapPresent': int,
+        "inCleaning": int,
+        "inReturning": int,
+        "inFreshState": int,
+        #  'labStatus': int,
+        #  'waterBoxStatus': int,
+        #  'backType': int,
+        #  'washPhase': int,
+        #  'washReady': int,
+        #  'fanPower': int,
+        #  'dndEnabled': int,
+        #  'mapStatus': int,
+        #  'isLocating': int,
+        #  'lockStatus': int,
+        #  'waterBoxMode': int,
+        #  'waterBoxCarriageStatus': int,
+        #  'mopForbiddenEnable': int,
+        #  'adbumperStatus': list,
+        #  'waterShortageStatus': int,
+        #  'dockType': int,
+        "dustCollectionStatus": int,
+        "autoDustCollection": int,
+        #  'mopMode': int,
+        #  'debugMode': int,
+        #  'switchMapMode': int,
+        #  'dockErrorStatus': int,
+        #  'chargeStatus': int,
+        #  'unsaveMapReason': int,
+        #  'unsaveMapFlag': int,
+        "status": str,
+        "mop_mode": str,
+        "mop_intensity": str,
+        # "error": NoneType,
+        #'icon': str,
+        "friendly_name": str,
+        #'supported_features': int
+    }
 
     HA_REST_API_URL = device_property(
         str,
@@ -204,18 +136,52 @@ class RoborockHA(Device):
         mandatory=True,
     )
 
-    vacuum_state = attribute(
-        label="state",
-        dtype=str,
-    )
-    vacuum_status = attribute(
-        label="status",
-        dtype=str,
-    )
+    def initialize_dynamic_attributes_from_vacuum_query(self):
+        for attr_name, attr_type in self._vacuum_query_attrs_types.items():
+            if attr_name == "state":
+                attr_name = "vacuum_state"
+            elif attr_name == "status":
+                attr_name = "vacuum_status"
+            attr = attribute(
+                name=attr_name,
+                label=attr_name,
+                dtype=attr_type,
+                fget=self.read_vacuum_attr,
+            )
+            self.add_attribute(attr)
+
+    def read_vacuum_attr(self, attr):
+        attr_name = attr.get_name()
+        if attr_name == "vacuum_state":
+            attr_name = "state"
+        elif attr_name == "vacuum_status":
+            attr_name = "status"
+        return self._rest_api_client.get_state("vacuum.roborock_s7_pro_ultra").get("attributes").get(
+            attr_name
+        )
+    
+    def initialize_dynamic_attributes_from_ha_states(self):
+        for attr_name, attr_list in self._ha_entities_type_access.items():
+            attr = attribute(
+                name=attr_name,
+                label=attr_name,
+                dtype=attr_list[0],
+                access=attr_list[1],
+                fget=self.read_ha_state,
+            )
+            self.add_attribute(attr)
+
+    def read_ha_state(self, attr):
+        attr_name = attr.get_name()
+        dtype = self._ha_entities_type_access.get(attr_name)[0]
+        return dtype(self._rest_api_client.get_state(attr_name).get("state"))
+
     clean_repeat = attribute(
-        label="clean repeat",
+        label="room clean repeat",
         dtype=int,
         access=AttrWriteType.READ_WRITE,
+        memorized=True,
+        hw_memorized=True
     )
 
     def read_clean_repeat(self):
@@ -224,18 +190,8 @@ class RoborockHA(Device):
     def write_clean_repeat(self, value):
         self._clean_repeat = value
 
-    def read_vacuum_state(self):
-        return self._rest_api_client.get_state("vacuum.roborock_s7_pro_ultra").get(
-            "state"
-        )
-    
-    def read_vacuum_status(self):
-        return self._rest_api_client.get_state("vacuum.roborock_s7_pro_ultra").get("attributes").get(
-            "status"
-        )
-
     @command
-    def start_cleaning(self):
+    def start_cleaning_all(self):
         self._rest_api_client.post_service(
             "vacuum", "start", {"entity_id": self.HA_ENTITY_ID}
         )
@@ -245,6 +201,7 @@ class RoborockHA(Device):
         self._rest_api_client.post_service(
             "vacuum", "pause", {"entity_id": self.HA_ENTITY_ID}
         )
+
     @command
     def stop_cleaning(self):
         self._rest_api_client.post_service(
@@ -258,7 +215,7 @@ class RoborockHA(Device):
         )
 
     @command(dtype_in=(str,))
-    def clean_rooms(self, room_names):
+    def start_clean_rooms(self, room_names):
         room_names = list(filter(lambda x: x != "", room_names))
         if all(room_name in self.ROBOROCK_ROOM_NAMES for room_name in room_names):
             print(room_names)
@@ -267,24 +224,26 @@ class RoborockHA(Device):
             self._rest_api_client.post_service(
                 "vacuum",
                 "send_command",
-                {"command": "app_segment_clean",
-                 "entity_id": self.HA_ENTITY_ID,
-                 "params": [{"segments": room_ids}, {"repeat": 1}]},
+                {
+                    "command": "app_segment_clean",
+                    "entity_id": self.HA_ENTITY_ID,
+                    "params": [{"segments": room_ids}, {"repeat": self._clean_repeat}],
+                },
             )
 
     def init_device(self):
         Device.init_device(self)
         self.set_state(DevState.INIT)
+        self._clean_repeat = 1
         self.get_device_properties()
         self._rest_api_client = RestAPICachingClient(
             self.HA_REST_API_URL,
             self.HA_TOKEN,
             self.REST_API_POLLING_PERIOD,
-            (
-                "vacuum.roborock_s7_pro_ultra",
-                "sensor.roborock_s7_pro_ultra_last_clean_start",
-            ),
+            self._ha_entities,
         )
+        self.initialize_dynamic_attributes_from_vacuum_query()
+        self.initialize_dynamic_attributes_from_ha_states()
         self._rooms_dict = dict(zip(self.ROBOROCK_ROOM_NAMES, self.ROBOROCK_ROOM_IDS))
         self.set_state(DevState.ON)
 

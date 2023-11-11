@@ -10,7 +10,7 @@ class RestAPICachingClient:
         self, rest_url: str, auth_token: str, polling_period: int, entities_list: list
     ) -> None:
         self._rest_url = rest_url
-        self._states_url = rest_url + "/states/"
+        self._states_url = "{rest_url}/states/{entity_id}"
         self._services_url = "{rest_url}/services/{domain}/{service}"
         self._auth_token = auth_token
         self._get_headers = {
@@ -26,7 +26,7 @@ class RestAPICachingClient:
     async def fetch_states(self):
         while True:
             state_urls = [
-                parse.urljoin(self._states_url, entity_id)
+                self._states_url.format(rest_url = self._rest_url, entity_id = entity_id)
                 for entity_id in self._entities_list
             ]
             res = (

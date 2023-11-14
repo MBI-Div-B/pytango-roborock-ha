@@ -26,7 +26,7 @@ class RestAPICachingClient:
     async def fetch_states(self):
         while True:
             state_urls = [
-                self._states_url.format(rest_url = self._rest_url, entity_id = entity_id)
+                self._states_url.format(rest_url=self._rest_url, entity_id=entity_id)
                 for entity_id in self._entities_list
             ]
             res = (
@@ -54,6 +54,3 @@ class RestAPICachingClient:
         print(self._post_headers)
         res = requests.post(service_url, json=json, headers=self._post_headers)
         print(res)
-
-    def stop_fetch(self):
-        self._event_loop.stop()

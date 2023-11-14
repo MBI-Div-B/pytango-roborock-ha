@@ -34,7 +34,7 @@ class RoborockHA(Device):
     )
     _ha_entities_type_access = {
         "sensor.roborock_s7_pro_ultra_last_clean_start": [str, AttrWriteType.READ],
-        #"number.roborock_s7_pro_ultra_sound_volume": [int, AttrWriteType.READ_WRITE],
+        # "number.roborock_s7_pro_ultra_sound_volume": [int, AttrWriteType.READ_WRITE],
         "sensor.roborock_s7_pro_ultra_cleaning_progress": [float, AttrWriteType.READ],
         "sensor.roborock_s7_pro_ultra_current_clean_area": [float, AttrWriteType.READ],
         "sensor.roborock_s7_pro_ultra_current_clean_duration": [
@@ -156,15 +156,17 @@ class RoborockHA(Device):
             attr_name = "state"
         elif attr_name == "vacuum_status":
             attr_name = "status"
-        return self._rest_api_client.get_state("vacuum.roborock_s7_pro_ultra").get("attributes").get(
-            attr_name
+        return (
+            self._rest_api_client.get_state("vacuum.roborock_s7_pro_ultra")
+            .get("attributes")
+            .get(attr_name)
         )
-    
+
     def initialize_dynamic_attributes_from_ha_states(self):
         for attr_name, attr_list in self._ha_entities_type_access.items():
             attr = attribute(
                 name=attr_name,
-                label=attr_name,
+                label=attr_name.split(".")[-1],
                 dtype=attr_list[0],
                 access=attr_list[1],
                 fget=self.read_ha_state,
@@ -181,7 +183,7 @@ class RoborockHA(Device):
         dtype=int,
         access=AttrWriteType.READ_WRITE,
         memorized=True,
-        hw_memorized=True
+        hw_memorized=True,
     )
 
     def read_clean_repeat(self):
@@ -249,4 +251,3 @@ class RoborockHA(Device):
 
     def delete_device(self):
         Device.delete_device(self)
-        self._rest_api_client.stop_fetch()

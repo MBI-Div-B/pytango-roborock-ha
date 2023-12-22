@@ -3,6 +3,7 @@ from tango.server import Device, attribute, command, device_property, GreenMode
 from importlib.resources import files
 import numpy as np
 from enum import IntEnum
+import time
 from .rest_api_client import RestAPICachingClient
 
 
@@ -15,6 +16,7 @@ class ROOM_IDS(IntEnum):
 class RoborockHA(Device):
     green_mode = GreenMode.Asyncio
 
+    # entities in home assistant
     _ha_entities = (
         "vacuum.roborock_s7_pro_ultra",
         "sensor.roborock_s7_pro_ultra_last_clean_start",
@@ -54,6 +56,7 @@ class RoborockHA(Device):
             AttrWriteType.READ,
         ],
     }
+    # attributes of vacuum robot itself
     _vacuum_query_attrs_types = {
         #'fan_speed_list': list,
         #'mop_mode_list': list,
@@ -117,11 +120,6 @@ class RoborockHA(Device):
         doc="generated from user",
         mandatory=True,
     )
-    REST_API_POLLING_PERIOD = device_property(
-        int,
-        doc="generated from user",
-        default_value=10,
-    )
     HA_ENTITY_ID = device_property(
         str,
         doc="see in services, choose as target, yaml mode\nSomething like: vacuum.roborock_s7_pro_ultra",
@@ -136,12 +134,50 @@ class RoborockHA(Device):
         mandatory=True,
     )
 
+    def dev_state(self):
+        status_str, state_str = self._rest_api_client.get_state(
+            "vacuum.roborock_s7_pro_ultra"
+        ).get("attributes").get("status"), self._rest_api_client.get_state(
+            "vacuum.roborock_s7_pro_ultra"
+        ).get(
+            "attributes"
+        ).get(
+            "state"
+        )
+        """
+        roborock state can be:
+        cleaning,
+        returning,
+        docked, idle
+        status can be:
+        charging,
+        cleaning,
+        error (if error then field "error" is not null"),
+        washing_the_mop,
+        charger_disconnected
+        """
+
+    def dev_status(self):
+        template = "Status:\n{}\nState:\n{}"
+        return template.format(
+            self._rest_api_client.get_state("vacuum.roborock_s7_pro_ultra")
+            .get("attributes")
+            .get("status"),
+            self._rest_api_client.get_state("vacuum.roborock_s7_pro_ultra")
+            .get("attributes")
+            .get("state"),
+        )
+
+    def always_executed_hook(self):
+        now = time.time()
+        if (now - self._last_query) > 1:
+            self._rest_api_client.fetch_states()
+            self._last_query = now
+
     def initialize_dynamic_attributes_from_vacuum_query(self):
         for attr_name, attr_type in self._vacuum_query_attrs_types.items():
-            if attr_name == "state":
-                attr_name = "vacuum_state"
-            elif attr_name == "status":
-                attr_name = "vacuum_status"
+            if attr_name == "state" or attr_name == "status":
+                continue
             attr = attribute(
                 name=attr_name,
                 label=attr_name,
@@ -152,10 +188,6 @@ class RoborockHA(Device):
 
     def read_vacuum_attr(self, attr):
         attr_name = attr.get_name()
-        if attr_name == "vacuum_state":
-            attr_name = "state"
-        elif attr_name == "vacuum_status":
-            attr_name = "status"
         return (
             self._rest_api_client.get_state("vacuum.roborock_s7_pro_ultra")
             .get("attributes")
@@ -241,12 +273,12 @@ class RoborockHA(Device):
         self._rest_api_client = RestAPICachingClient(
             self.HA_REST_API_URL,
             self.HA_TOKEN,
-            self.REST_API_POLLING_PERIOD,
             self._ha_entities,
         )
         self.initialize_dynamic_attributes_from_vacuum_query()
         self.initialize_dynamic_attributes_from_ha_states()
         self._rooms_dict = dict(zip(self.ROBOROCK_ROOM_NAMES, self.ROBOROCK_ROOM_IDS))
+        self._last_query = 0
         self.set_state(DevState.ON)
 
     def delete_device(self):
